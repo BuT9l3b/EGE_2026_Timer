@@ -201,8 +201,7 @@
   <div>
     <h1>ЕГЭ 2026 — таймеры до экзаменов</h1>
     <div class="sub">
-      Показываем <b>только 4 экзамена</b>: математика (профиль), русский язык, информатика, физика.
-      Таймеры считают до <b>10:00 по Москве</b> и обновляются каждую минуту.
+      Таймеры считают до 10:00 по Москве и обновляются раз в минуту.
     </div>
   </div>
 
@@ -212,10 +211,7 @@
       <div id="nowLabel" class="mono">—</div>
     </div>
     <div class="big mono" id="nextExamLabel">Ближайший экзамен: —</div>
-    <div class="small-note">Таймеры: точность до минут (обновление раз в минуту).</div>
-    <div style="margin-top:12px" class="btnbar">
-      <button id="resetBtn" type="button">Сбросить/перечитать</button>
-    </div>
+    <div style="margin-top:12px" class="btnbar"></div>
   </div>
 </header>
 
@@ -225,13 +221,13 @@
 
 <script>
   // ====== НАСТРОЙКИ: экзамены ======
-  // Устанавливаем время начала каждого экзамена: 10:00 (МСК)
-  // Примечание: в ISO строках " +03:00 " фиксирует МСК как смещение.
+  // Время старта: 10:00 по Москве.
+  // Важно: ISO с +03:00 фиксирует МСК как смещение.
   const exams = [
     { key: "math_profile", name: "ЕГЭ: Математика (профиль)", datetime: "2026-06-08T10:00:00+03:00" },
-    { key: "russian",     name: "ЕГЭ: Русский язык",            datetime: "2026-06-04T10:00:00+03:00" },
-    { key: "informatics", name: "ЕГЭ: Информатика",              datetime: "2026-06-18T10:00:00+03:00" },
-    { key: "physics",     name: "ЕГЭ: Физика",                  datetime: "2026-06-11T10:00:00+03:00" },
+    { key: "russian",     name: "ЕГЭ: Русский язык",          datetime: "2026-06-04T10:00:00+03:00" },
+    { key: "informatics", name: "ЕГЭ: Информатика",          datetime: "2026-06-18T10:00:00+03:00" },
+    { key: "physics",     name: "ЕГЭ: Физика",              datetime: "2026-06-11T10:00:00+03:00" },
   ];
 
   function pad2(n){ return String(n).padStart(2, "0"); }
@@ -252,7 +248,7 @@
   }
 
   function msToPartsMinutes(diff){
-    // точность до минут: показываем D H : MM
+    // показываем точность до минут: D H : MM
     const s = Math.max(0, Math.floor(diff / 1000));
     const days = Math.floor(s / 86400);
     const hours = Math.floor((s % 86400) / 3600);
@@ -301,8 +297,10 @@
   function render(){
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-    const parsed = exams.map(e => ({...e, t: new Date(e.datetime).getTime()}))
-                         .sort((a,b)=>a.t-b.t);
+
+    const parsed = exams
+      .map(e => ({...e, t: new Date(e.datetime).getTime()}))
+      .sort((a,b)=>a.t-b.t);
 
     for(const ex of parsed) grid.appendChild(buildCard(ex));
     update();
@@ -312,10 +310,11 @@
     const now = new Date();
     document.getElementById("nowLabel").textContent = formatHM_MSK(now);
 
-    const nowMs = now.getTime();
-    const parsed = exams.map(e => ({...e, t: new Date(e.datetime).getTime()}))
-                        .sort((a,b)=>a.t-b.t);
+    const parsed = exams
+      .map(e => ({...e, t: new Date(e.datetime).getTime()}))
+      .sort((a,b)=>a.t-b.t);
 
+    const nowMs = now.getTime();
     const next = parsed.find(e => e.t > nowMs);
     document.getElementById("nextExamLabel").textContent = next
       ? `Ближайший экзамен: ${next.name} (${formatDateRu(next.datetime)})`
@@ -343,10 +342,8 @@
 
         const {days, hours, mins} = msToPartsMinutes(diff);
         timeEl.textContent = `${days} ${pad2(hours)}:${pad2(mins)}`;
-
-        // маленькая подсказка
         deltaEl.textContent = sameDay ? "осталось до старта" : "осталось";
-      }else{
+      } else {
         const c = colorForState("passed");
         dotEl.style.background = c.dot;
         dotEl.style.boxShadow = `0 0 0 4px ${c.glow}`;
@@ -357,8 +354,8 @@
     }
   }
 
-  // Обновляем раз в минуту (с выравниванием по минутам)
   function startMinuteTicker(){
+    // выравнивание по минутам
     update();
     const now = new Date();
     const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
