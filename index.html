@@ -1,373 +1,314 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ЕГЭ 2026 — таймеры до экзаменов</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Таймеры до ЕГЭ</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
-    :root{
-      --bg:#0b1220;
-      --card:#111a2e;
-      --text:#e8eefc;
-      --muted:#a9b4d0;
-      --accent:#6ea8fe;
-      --warn:#fbbf24;
-      --good:#4ade80;
-      --border: rgba(255,255,255,.08);
-      --shadow: 0 12px 40px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    body{
+    * {
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1000px 600px at 20% 0%, rgba(110,168,254,.22), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(74,222,128,.14), transparent 55%),
-                  var(--bg);
-      color:var(--text);
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body {
+      font-family:'Inter',sans-serif;
       min-height:100vh;
-      padding:24px;
-    }
-    header{
-      max-width: 980px;
-      margin: 0 auto 18px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    h1{
-      margin:0;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing:.2px;
-    }
-    .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size: 13px;
-      line-height:1.35;
-      max-width: 520px;
-    }
-    .pill{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow: var(--shadow);
-      min-width: 260px;
-    }
-    .pill .row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .pill .big{
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing:.2px;
+      background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+      color:#fff;
+      padding:40px 20px;
     }
 
-    main{
-      max-width: 980px;
-      margin: 0 auto;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
-    .card{
-      grid-column: span 6;
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    .card::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: radial-gradient(600px 120px at 0% 0%, rgba(110,168,254,.22), transparent 55%),
-                  radial-gradient(500px 140px at 100% 0%, rgba(74,222,128,.14), transparent 60%);
-      opacity:.6;
-      pointer-events:none;
-    }
-    .card > *{position:relative; z-index:1;}
-
-    .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 10px;
-    }
-    .name{
-      font-weight: 800;
-      font-size: 15px;
-      line-height:1.25;
-    }
-    .date{
-      color: var(--muted);
-      font-size: 13px;
-      margin-top:6px;
-    }
-    .badge{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: var(--muted);
-      white-space:nowrap;
-      height: fit-content;
+    .container {
+      max-width:1400px;
+      margin:0 auto;
     }
 
-    .timer{
-      display:flex;
-      align-items:baseline;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 8px;
+    h1 {
+      text-align:center;
+      font-size:3.5rem;
+      font-weight:700;
+      margin-bottom:16px;
+      background:linear-gradient(90deg,#e94560,#ffd460);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
     }
-    .time{
-      font-size: 32px;
-      font-weight: 900;
-      letter-spacing:.2px;
-    }
-    .labels{
-      display:flex;
-      gap:16px;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: -4px;
-      margin-left: 2px;
-    }
-    .labels span{min-width: 30px}
 
-    .bottom{
-      margin-top: 12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      color: var(--muted);
-      font-size: 13px;
+    .subtitle {
+      text-align:center;
+      color:#ccc;
+      margin-bottom:50px;
+      font-size:1.4rem;
     }
-    .status{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .dot{
-      width:10px; height:10px;
-      border-radius:50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(110,168,254,.18);
-    }
-    .mono{font-variant-numeric: tabular-nums;}
-    .small-note{color:var(--muted); font-size:12px; margin-top:10px}
 
-    button{
-      appearance:none;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
+    .nearest-exam {
+      background:linear-gradient(135deg,#e94560 0%,#ff6b6b 100%);
+      border-radius:24px;
+      padding:36px;
+      margin-bottom:50px;
+      text-align:center;
+      box-shadow:0 10px 40px rgba(233,69,96,0.3);
+    }
+
+    .nearest-exam h2 {
+      font-size:1.2rem;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      opacity:0.9;
+      margin-bottom:12px;
+    }
+
+    .nearest-exam .exam-name {
+      font-size:2.4rem;
       font-weight:700;
     }
-    button:hover{background: rgba(255,255,255,.07)}
-    .btnbar{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
 
-    @media (max-width: 860px){
-      .card{grid-column: span 12;}
-      .pill{min-width: unset; width:100%;}
+    .nearest-exam .exam-date {
+      font-size:1.4rem;
+      opacity:0.9;
+      margin-top:12px;
+    }
+
+    .timers-grid {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:28px;
+    }
+
+    .timer-card {
+      background:rgba(255,255,255,0.05);
+      border-radius:24px;
+      padding:32px 28px;
+      border:1px solid rgba(255,255,255,0.1);
+      transition:all 0.3s ease;
+      min-width:0;
+    }
+
+    .timer-card:hover {
+      transform:translateY(-6px);
+      border-color:rgba(233,69,96,0.4);
+      box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .timer-card.next {
+      border-color:#e94560;
+      background:linear-gradient(135deg,rgba(233,69,96,0.15) 0%,rgba(255,107,107,0.1) 100%);
+    }
+
+    .timer-card .exam-title {
+      font-size:1.2rem;
+      font-weight:600;
+      color:#ccc;
+      margin-bottom:22px;
+      white-space:nowrap;
+    }
+
+    .timer-card.next .exam-title {
+      color:#ff6b6b;
+    }
+
+    .timer-card .countdown {
+      display:flex;
+      gap:14px;
+      justify-content:center;
+    }
+
+    .timer-card .time-block {
+      text-align:center;
+      min-width:52px;
+    }
+
+    .timer-card .time-value {
+      font-size:1.9rem;
+      font-weight:700;
+      color:#fff;
+      display:block;
+    }
+
+    .timer-card .time-label {
+      font-size:0.8rem;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .timer-card .exam-time {
+      text-align:center;
+      margin-top:18px;
+      font-size:0.95rem;
+      color:#fff;
+    }
+
+    .timer-card.expired {
+      opacity:0.5;
+    }
+
+    .timer-card.expired .time-value {
+      color:#999;
+    }
+
+    .timer-card.expired::after {
+      content:"✓ Экзамен сдан!";
+      display:block;
+      text-align:center;
+      color:#4ade80;
+      font-weight:600;
+      margin-top:12px;
+    }
+
+    @media (max-width:1000px) {
+      .timers-grid {
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    @media (max-width:600px) {
+      h1 { font-size:2.2rem; }
+      .nearest-exam { padding:24px; }
+      .nearest-exam .exam-name { font-size:1.6rem; }
+      .timer-card { padding:22px 18px; }
+      .timer-card .exam-title { font-size:1rem; white-space:normal; }
+      .timer-card .time-value { font-size:1.5rem; }
+      .timer-card .time-block { min-width:42px; }
+      .timer-card .countdown { gap:8px; }
+      .timers-grid {
+        grid-template-columns:repeat(2,1fr);
+        gap:16px;
+      }
     }
   </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>ЕГЭ 2026 — таймеры до экзаменов</h1>
-    <div class="sub">
-      Таймеры считают до 10:00 по Москве и обновляются раз в минуту.
+  <div class="container">
+    <h1>До ЕГЭ осталось</h1>
+    <p class="subtitle">Отсчет времени до каждого экзамена</p>
+
+    <div class="nearest-exam">
+      <h2>Ближайший экзамен</h2>
+      <div class="exam-name" id="nearestName">—</div>
+      <div class="exam-date" id="nearestDate">—</div>
+    </div>
+
+    <div class="timers-grid" id="timersGrid">
     </div>
   </div>
 
-  <div class="pill">
-    <div class="row">
-      <div>Текущее время (МСК)</div>
-      <div id="nowLabel" class="mono">—</div>
-    </div>
-    <div class="big mono" id="nextExamLabel">Ближайший экзамен: —</div>
-    <div style="margin-top:12px" class="btnbar"></div>
-  </div>
-</header>
+  <script>
+    const EXAM_DATES = {
+      russian:     "2026-06-04T10:00:00+03:00",
+      math_profile:"2026-06-08T10:00:00+03:00",
+      physics:     "2026-06-11T10:00:00+03:00",
+      informatics: "2026-06-18T10:00:00+03:00",
+    };
 
-<main>
-  <div id="grid" class="grid"></div>
-</main>
+    const EXAM_NAMES = {
+      russian:     "ЕГЭ: Русский язык",
+      math_profile:"ЕГЭ: Математика (профиль)",
+      physics:     "ЕГЭ: Физика",
+      informatics: "ЕГЭ: Информатика",
+    };
 
-<script>
-  // ====== НАСТРОЙКИ: экзамены ======
-  // Время старта: 10:00 по Москве.
-  // Важно: ISO с +03:00 фиксирует МСК как смещение.
-  const exams = [
-    { key: "math_profile", name: "ЕГЭ: Математика (профиль)", datetime: "2026-06-08T10:00:00+03:00" },
-    { key: "russian",     name: "ЕГЭ: Русский язык",          datetime: "2026-06-04T10:00:00+03:00" },
-    { key: "informatics", name: "ЕГЭ: Информатика",          datetime: "2026-06-18T10:00:00+03:00" },
-    { key: "physics",     name: "ЕГЭ: Физика",              datetime: "2026-06-11T10:00:00+03:00" },
-  ];
+    function getTimeRemaining(targetDate) {
+      const now = new Date();
+      const target = new Date(targetDate);
+      const diff = target - now;
 
-  function pad2(n){ return String(n).padStart(2, "0"); }
+      if (diff <= 0) {
+        return { days:0, hours:0, minutes:0, seconds:0, expired:true };
+      }
 
-  function formatDateRu(iso){
-    const d = new Date(iso);
-    return d.toLocaleDateString("ru-RU", {
-      day:"2-digit", month:"long", year:"numeric", weekday:"long",
-      timeZone: "Europe/Moscow"
-    });
-  }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-  function formatHM_MSK(d){
-    return d.toLocaleTimeString("ru-RU", {
-      hour:"2-digit", minute:"2-digit", second:"2-digit",
-      timeZone: "Europe/Moscow"
-    });
-  }
+      return { days, hours, minutes, seconds, expired:false };
+    }
 
-  function msToPartsMinutes(diff){
-    // показываем точность до минут: D H : MM
-    const s = Math.max(0, Math.floor(diff / 1000));
-    const days = Math.floor(s / 86400);
-    const hours = Math.floor((s % 86400) / 3600);
-    const mins = Math.floor((s % 3600) / 60);
-    return { days, hours, mins };
-  }
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('ru-RU', {
+        day:'numeric',
+        month:'long',
+        hour:'2-digit',
+        minute:'2-digit'
+      });
+    }
 
-  function colorForState(state){
-    if(state === "future") return { dot:"var(--accent)", glow:"rgba(110,168,254,.18)", label:"Скоро" };
-    if(state === "today")  return { dot:"var(--warn)",   glow:"rgba(251,191,36,.22)", label:"В этот день" };
-    return { dot:"var(--good)", glow:"rgba(74,222,128,.18)", label:"Экзамен прошёл (по таймеру)" };
-  }
+    function padZero(num) {
+      return num.toString().padStart(2,'0');
+    }
 
-  function buildCard(exam){
-    const el = document.createElement("section");
-    el.className = "card";
-    el.dataset.key = exam.key;
-    el.innerHTML = `
-      <div class="top">
-        <div>
-          <div class="name">${exam.name}</div>
-          <div class="date">${formatDateRu(exam.datetime)}</div>
-        </div>
-        <div class="badge">старт: 10:00 МСК</div>
-      </div>
+    function getNearestExam() {
+      const now = new Date();
+      let nearest = null;
+      let nearestKey = null;
 
-      <div class="timer">
-        <div class="time mono" id="time_${exam.key}">—</div>
-      </div>
+      for (const [key, date] of Object.entries(EXAM_DATES)) {
+        const examDate = new Date(date);
+        if (examDate > now) {
+          if (!nearest || examDate < nearest) {
+            nearest = examDate;
+            nearestKey = key;
+          }
+        }
+      }
 
-      <div class="labels" aria-hidden="true">
-        <span>дн</span><span>ч</span><span>мин</span>
-      </div>
+      return nearestKey;
+    }
 
-      <div class="bottom">
-        <div class="status" id="status_${exam.key}">
-          <span class="dot"></span>
-          <span>Ждём…</span>
-        </div>
-        <div class="mono" id="delta_${exam.key}"></div>
-      </div>
-    `;
-    return el;
-  }
+    function renderTimers() {
+      const grid = document.getElementById('timersGrid');
+      grid.innerHTML = '';
 
-  function render(){
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
+      const nearestKey = getNearestExam();
 
-    const parsed = exams
-      .map(e => ({...e, t: new Date(e.datetime).getTime()}))
-      .sort((a,b)=>a.t-b.t);
+      for (const [key, date] of Object.entries(EXAM_DATES)) {
+        const time = getTimeRemaining(date);
+        const isNearest = key === nearestKey && !time.expired;
 
-    for(const ex of parsed) grid.appendChild(buildCard(ex));
-    update();
-  }
+        const card = document.createElement('div');
+        card.className = `timer-card${isNearest ? ' next' : ''}${time.expired ? ' expired' : ''}`;
 
-  function update(){
-    const now = new Date();
-    document.getElementById("nowLabel").textContent = formatHM_MSK(now);
+        card.innerHTML = `
+          <div class="exam-title">${EXAM_NAMES[key]}</div>
+          <div class="countdown">
+            <div class="time-block">
+              <span class="time-value">${padZero(time.days)}</span>
+              <span class="time-label">Дней</span>
+            </div>
+            <div class="time-block">
+              <span class="time-value">${padZero(time.hours)}</span>
+              <span class="time-label">Часов</span>
+            </div>
+            <div class="time-block">
+              <span class="time-value">${padZero(time.minutes)}</span>
+              <span class="time-label">Мин</span>
+            </div>
+            <div class="time-block">
+              <span class="time-value">${padZero(time.seconds)}</span>
+              <span class="time-label">Сек</span>
+            </div>
+          </div>
+          <div class="exam-time">${formatDate(date)}</div>
+        `;
 
-    const parsed = exams
-      .map(e => ({...e, t: new Date(e.datetime).getTime()}))
-      .sort((a,b)=>a.t-b.t);
+        grid.appendChild(card);
+      }
 
-    const nowMs = now.getTime();
-    const next = parsed.find(e => e.t > nowMs);
-    document.getElementById("nextExamLabel").textContent = next
-      ? `Ближайший экзамен: ${next.name} (${formatDateRu(next.datetime)})`
-      : `Ближайший экзамен: — (все даты уже прошли по таймеру)`;
-
-    for(const exam of parsed){
-      const diff = exam.t - nowMs;
-      const key = exam.key;
-
-      const timeEl = document.getElementById("time_"+key);
-      const deltaEl = document.getElementById("delta_"+key);
-      const statusEl = document.getElementById("status_"+key);
-      const dotEl = statusEl.querySelector(".dot");
-      const statusText = statusEl.querySelector("span:last-child");
-
-      if(diff > 0){
-        const targetDate = new Date(exam.t);
-        const sameDay = targetDate.toLocaleDateString("ru-RU", { timeZone:"Europe/Moscow" })
-                      === now.toLocaleDateString("ru-RU", { timeZone:"Europe/Moscow" });
-
-        const c = colorForState(sameDay ? "today" : "future");
-        dotEl.style.background = c.dot;
-        dotEl.style.boxShadow = `0 0 0 4px ${c.glow}`;
-        statusText.textContent = c.label;
-
-        const {days, hours, mins} = msToPartsMinutes(diff);
-        timeEl.textContent = `${days} ${pad2(hours)}:${pad2(mins)}`;
-        deltaEl.textContent = sameDay ? "осталось до старта" : "осталось";
+      if (nearestKey) {
+        document.getElementById('nearestName').textContent = EXAM_NAMES[nearestKey];
+        document.getElementById('nearestDate').textContent = formatDate(EXAM_DATES[nearestKey]);
       } else {
-        const c = colorForState("passed");
-        dotEl.style.background = c.dot;
-        dotEl.style.boxShadow = `0 0 0 4px ${c.glow}`;
-        statusText.textContent = c.label;
-        timeEl.textContent = `0 00:00`;
-        deltaEl.textContent = "—";
+        document.getElementById('nearestName').textContent = 'Все экзамены сданы!';
+        document.getElementById('nearestDate').textContent = '';
       }
     }
-  }
 
-  function startMinuteTicker(){
-    // выравнивание по минутам
-    update();
-    const now = new Date();
-    const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-    setTimeout(() => {
-      update();
-      setInterval(update, 60_000);
-    }, msToNextMinute);
-  }
-
-  document.getElementById("resetBtn").addEventListener("click", () => render());
-  render();
-  startMinuteTicker();
-</script>
+    renderTimers();
+    setInterval(renderTimers, 1000);
+  </script>
 </body>
 </html>
