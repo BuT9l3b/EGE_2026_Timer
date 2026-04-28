@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ЕГЭ 2026 — таймеры до экзаменов</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --text:#e8eefc;
+      --muted:#a9b4d0;
+      --accent:#6ea8fe;
+      --warn:#fbbf24;
+      --good:#4ade80;
+      --border: rgba(255,255,255,.08);
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1000px 600px at 20% 0%, rgba(110,168,254,.22), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(74,222,128,.14), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+    }
+    header{
+      max-width: 980px;
+      margin: 0 auto 18px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size: 13px;
+      line-height:1.35;
+      max-width: 520px;
+    }
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius:14px;
+      box-shadow: var(--shadow);
+      min-width: 260px;
+    }
+    .pill .row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .pill .big{
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing:.2px;
+    }
+
+    main{
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .card{
+      grid-column: span 6;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 120px at 0% 0%, rgba(110,168,254,.22), transparent 55%),
+                  radial-gradient(500px 140px at 100% 0%, rgba(74,222,128,.14), transparent 60%);
+      opacity:.6;
+      pointer-events:none;
+    }
+    .card > *{position:relative; z-index:1;}
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .name{
+      font-weight: 800;
+      font-size: 15px;
+      line-height:1.25;
+    }
+    .date{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top:6px;
+    }
+    .badge{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      height: fit-content;
+    }
+
+    .timer{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 8px;
+    }
+    .time{
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .labels{
+      display:flex;
+      gap:16px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: -4px;
+      margin-left: 2px;
+    }
+    .labels span{min-width: 30px}
+
+    .bottom{
+      margin-top: 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .dot{
+      width:10px; height:10px;
+      border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(110,168,254,.18);
+    }
+    .mono{font-variant-numeric: tabular-nums;}
+    .small-note{color:var(--muted); font-size:12px; margin-top:10px}
+
+    button{
+      appearance:none;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button:hover{background: rgba(255,255,255,.07)}
+    .btnbar{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+
+    @media (max-width: 860px){
+      .card{grid-column: span 12;}
+      .pill{min-width: unset; width:100%;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ЕГЭ 2026 — таймеры до экзаменов</h1>
+    <div class="sub">
+      Показываем <b>только 4 экзамена</b>: математика (профиль), русский язык, информатика, физика.
+      Таймеры считают до <b>10:00 по Москве</b> и обновляются каждую минуту.
+    </div>
+  </div>
+
+  <div class="pill">
+    <div class="row">
+      <div>Текущее время (МСК)</div>
+      <div id="nowLabel" class="mono">—</div>
+    </div>
+    <div class="big mono" id="nextExamLabel">Ближайший экзамен: —</div>
+    <div class="small-note">Таймеры: точность до минут (обновление раз в минуту).</div>
+    <div style="margin-top:12px" class="btnbar">
+      <button id="resetBtn" type="button">Сбросить/перечитать</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="grid" class="grid"></div>
+</main>
+
+<script>
+  // ====== НАСТРОЙКИ: экзамены ======
+  // Устанавливаем время начала каждого экзамена: 10:00 (МСК)
+  // Примечание: в ISO строках " +03:00 " фиксирует МСК как смещение.
+  const exams = [
+    { key: "math_profile", name: "ЕГЭ: Математика (профиль)", datetime: "2026-06-08T10:00:00+03:00" },
+    { key: "russian",     name: "ЕГЭ: Русский язык",            datetime: "2026-06-04T10:00:00+03:00" },
+    { key: "informatics", name: "ЕГЭ: Информатика",              datetime: "2026-06-18T10:00:00+03:00" },
+    { key: "physics",     name: "ЕГЭ: Физика",                  datetime: "2026-06-11T10:00:00+03:00" },
+  ];
+
+  function pad2(n){ return String(n).padStart(2, "0"); }
+
+  function formatDateRu(iso){
+    const d = new Date(iso);
+    return d.toLocaleDateString("ru-RU", {
+      day:"2-digit", month:"long", year:"numeric", weekday:"long",
+      timeZone: "Europe/Moscow"
+    });
+  }
+
+  function formatHM_MSK(d){
+    return d.toLocaleTimeString("ru-RU", {
+      hour:"2-digit", minute:"2-digit", second:"2-digit",
+      timeZone: "Europe/Moscow"
+    });
+  }
+
+  function msToPartsMinutes(diff){
+    // точность до минут: показываем D H : MM
+    const s = Math.max(0, Math.floor(diff / 1000));
+    const days = Math.floor(s / 86400);
+    const hours = Math.floor((s % 86400) / 3600);
+    const mins = Math.floor((s % 3600) / 60);
+    return { days, hours, mins };
+  }
+
+  function colorForState(state){
+    if(state === "future") return { dot:"var(--accent)", glow:"rgba(110,168,254,.18)", label:"Скоро" };
+    if(state === "today")  return { dot:"var(--warn)",   glow:"rgba(251,191,36,.22)", label:"В этот день" };
+    return { dot:"var(--good)", glow:"rgba(74,222,128,.18)", label:"Экзамен прошёл (по таймеру)" };
+  }
+
+  function buildCard(exam){
+    const el = document.createElement("section");
+    el.className = "card";
+    el.dataset.key = exam.key;
+    el.innerHTML = `
+      <div class="top">
+        <div>
+          <div class="name">${exam.name}</div>
+          <div class="date">${formatDateRu(exam.datetime)}</div>
+        </div>
+        <div class="badge">старт: 10:00 МСК</div>
+      </div>
+
+      <div class="timer">
+        <div class="time mono" id="time_${exam.key}">—</div>
+      </div>
+
+      <div class="labels" aria-hidden="true">
+        <span>дн</span><span>ч</span><span>мин</span>
+      </div>
+
+      <div class="bottom">
+        <div class="status" id="status_${exam.key}">
+          <span class="dot"></span>
+          <span>Ждём…</span>
+        </div>
+        <div class="mono" id="delta_${exam.key}"></div>
+      </div>
+    `;
+    return el;
+  }
+
+  function render(){
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    const parsed = exams.map(e => ({...e, t: new Date(e.datetime).getTime()}))
+                         .sort((a,b)=>a.t-b.t);
+
+    for(const ex of parsed) grid.appendChild(buildCard(ex));
+    update();
+  }
+
+  function update(){
+    const now = new Date();
+    document.getElementById("nowLabel").textContent = formatHM_MSK(now);
+
+    const nowMs = now.getTime();
+    const parsed = exams.map(e => ({...e, t: new Date(e.datetime).getTime()}))
+                        .sort((a,b)=>a.t-b.t);
+
+    const next = parsed.find(e => e.t > nowMs);
+    document.getElementById("nextExamLabel").textContent = next
+      ? `Ближайший экзамен: ${next.name} (${formatDateRu(next.datetime)})`
+      : `Ближайший экзамен: — (все даты уже прошли по таймеру)`;
+
+    for(const exam of parsed){
+      const diff = exam.t - nowMs;
+      const key = exam.key;
+
+      const timeEl = document.getElementById("time_"+key);
+      const deltaEl = document.getElementById("delta_"+key);
+      const statusEl = document.getElementById("status_"+key);
+      const dotEl = statusEl.querySelector(".dot");
+      const statusText = statusEl.querySelector("span:last-child");
+
+      if(diff > 0){
+        const targetDate = new Date(exam.t);
+        const sameDay = targetDate.toLocaleDateString("ru-RU", { timeZone:"Europe/Moscow" })
+                      === now.toLocaleDateString("ru-RU", { timeZone:"Europe/Moscow" });
+
+        const c = colorForState(sameDay ? "today" : "future");
+        dotEl.style.background = c.dot;
+        dotEl.style.boxShadow = `0 0 0 4px ${c.glow}`;
+        statusText.textContent = c.label;
+
+        const {days, hours, mins} = msToPartsMinutes(diff);
+        timeEl.textContent = `${days} ${pad2(hours)}:${pad2(mins)}`;
+
+        // маленькая подсказка
+        deltaEl.textContent = sameDay ? "осталось до старта" : "осталось";
+      }else{
+        const c = colorForState("passed");
+        dotEl.style.background = c.dot;
+        dotEl.style.boxShadow = `0 0 0 4px ${c.glow}`;
+        statusText.textContent = c.label;
+        timeEl.textContent = `0 00:00`;
+        deltaEl.textContent = "—";
+      }
+    }
+  }
+
+  // Обновляем раз в минуту (с выравниванием по минутам)
+  function startMinuteTicker(){
+    update();
+    const now = new Date();
+    const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+    setTimeout(() => {
+      update();
+      setInterval(update, 60_000);
+    }, msToNextMinute);
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", () => render());
+  render();
+  startMinuteTicker();
+</script>
+</body>
+</html>
