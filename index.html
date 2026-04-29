@@ -4,311 +4,361 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Таймеры до ЕГЭ</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      --text-main: #ffffff;
+      --text-muted: #cccccc;
+      --accent-gradient: linear-gradient(90deg, #e94560, #ffd460);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-hover-border: rgba(233, 69, 96, 0.4);
+      --danger-color: #e94560;
+      --danger-light: #ff6b6b;
+      --success-color: #4ade80;
+    }
+
     * {
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family:'Inter',sans-serif;
-      min-height:100vh;
-      background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-      color:#fff;
-      padding:40px 20px;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      padding: 40px 20px;
     }
 
     .container {
-      max-width:1400px;
-      margin:0 auto;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     h1 {
-      text-align:center;
-      font-size:3.5rem;
-      font-weight:700;
-      margin-bottom:16px;
-      background:linear-gradient(90deg,#e94560,#ffd460);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
+      text-align: center;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .subtitle {
-      text-align:center;
-      color:#ccc;
-      margin-bottom:50px;
-      font-size:1.4rem;
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 50px;
+      font-size: 1.4rem;
     }
 
     .nearest-exam {
-      background:linear-gradient(135deg,#e94560 0%,#ff6b6b 100%);
-      border-radius:24px;
-      padding:36px;
-      margin-bottom:50px;
-      text-align:center;
-      box-shadow:0 10px 40px rgba(233,69,96,0.3);
+      background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-light) 100%);
+      border-radius: 24px;
+      padding: 36px;
+      margin-bottom: 50px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
     }
 
     .nearest-exam h2 {
-      font-size:1.2rem;
-      text-transform:uppercase;
-      letter-spacing:2px;
-      opacity:0.9;
-      margin-bottom:12px;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.9;
+      margin-bottom: 12px;
     }
 
     .nearest-exam .exam-name {
-      font-size:2.4rem;
-      font-weight:700;
+      font-size: 2.4rem;
+      font-weight: 700;
     }
 
     .nearest-exam .exam-date {
-      font-size:1.4rem;
-      opacity:0.9;
-      margin-top:12px;
+      font-size: 1.4rem;
+      opacity: 0.9;
+      margin-top: 12px;
     }
 
     .timers-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
     }
 
     .timer-card {
-      background:rgba(255,255,255,0.05);
-      border-radius:24px;
-      padding:32px 28px;
-      border:1px solid rgba(255,255,255,0.1);
-      transition:all 0.3s ease;
-      min-width:0;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 32px 28px;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .timer-card:hover {
-      transform:translateY(-6px);
-      border-color:rgba(233,69,96,0.4);
-      box-shadow:0 20px 50px rgba(0,0,0,0.3);
+      transform: translateY(-6px);
+      border-color: var(--card-hover-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     }
 
     .timer-card.next {
-      border-color:#e94560;
-      background:linear-gradient(135deg,rgba(233,69,96,0.15) 0%,rgba(255,107,107,0.1) 100%);
+      border-color: var(--danger-color);
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.15) 0%, rgba(255, 107, 107, 0.1) 100%);
     }
 
     .timer-card .exam-title {
-      font-size:1.2rem;
-      font-weight:600;
-      color:#ccc;
-      margin-bottom:22px;
-      white-space:nowrap;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      text-align: center;
     }
 
     .timer-card.next .exam-title {
-      color:#ff6b6b;
+      color: var(--danger-light);
     }
 
     .timer-card .countdown {
-      display:flex;
-      gap:14px;
-      justify-content:center;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: auto; /* Pushes date to bottom */
     }
 
     .timer-card .time-block {
-      text-align:center;
-      min-width:52px;
+      text-align: center;
+      min-width: 52px;
     }
 
     .timer-card .time-value {
-      font-size:1.9rem;
-      font-weight:700;
-      color:#fff;
-      display:block;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: block;
+      font-variant-numeric: tabular-nums; /* Prevents jumping numbers */
     }
 
     .timer-card .time-label {
-      font-size:0.8rem;
-      color:#fff;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .timer-card .exam-time {
-      text-align:center;
-      margin-top:18px;
-      font-size:0.95rem;
-      color:#fff;
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
     }
 
-    .timer-card.expired {
-      opacity:0.5;
-    }
-
-    .timer-card.expired .time-value {
-      color:#999;
+    .timer-card.expired .countdown,
+    .timer-card.expired .exam-time {
+      opacity: 0.3;
     }
 
     .timer-card.expired::after {
-      content:"✓ Экзамен сдан!";
-      display:block;
-      text-align:center;
-      color:#4ade80;
-      font-weight:600;
-      margin-top:12px;
+      content: "✓ Экзамен сдан!";
+      display: block;
+      text-align: center;
+      color: var(--success-color);
+      font-weight: 600;
+      margin-top: 16px;
     }
 
-    @media (max-width:1000px) {
-      .timers-grid {
-        grid-template-columns:repeat(2,1fr);
-      }
+    @media (max-width: 1200px) {
+      .timers-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    @media (max-width:600px) {
-      h1 { font-size:2.2rem; }
-      .nearest-exam { padding:24px; }
-      .nearest-exam .exam-name { font-size:1.6rem; }
-      .timer-card { padding:22px 18px; }
-      .timer-card .exam-title { font-size:1rem; white-space:normal; }
-      .timer-card .time-value { font-size:1.5rem; }
-      .timer-card .time-block { min-width:42px; }
-      .timer-card .countdown { gap:8px; }
-      .timers-grid {
-        grid-template-columns:repeat(2,1fr);
-        gap:16px;
-      }
+    @media (max-width: 600px) {
+      h1 { font-size: 2.2rem; }
+      .nearest-exam { padding: 24px; }
+      .nearest-exam .exam-name { font-size: 1.6rem; }
+      .timers-grid { grid-template-columns: 1fr; gap: 16px; } /* На мобилках 1 колонка */
+      .timer-card { padding: 24px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <main class="container">
     <h1>До ЕГЭ осталось</h1>
     <p class="subtitle">Отсчет времени до каждого экзамена</p>
 
-    <div class="nearest-exam">
+    <section class="nearest-exam">
       <h2>Ближайший экзамен</h2>
       <div class="exam-name" id="nearestName">—</div>
       <div class="exam-date" id="nearestDate">—</div>
-    </div>
+    </section>
 
     <div class="timers-grid" id="timersGrid">
+      <!-- Сюда карточки добавляются через JS один раз -->
     </div>
-  </div>
+  </main>
 
   <script>
-    const EXAM_DATES = {
-      russian:     "2026-06-04T10:00:00+03:00",
-      math_profile:"2026-06-08T10:00:00+03:00",
-      physics:     "2026-06-11T10:00:00+03:00",
-      informatics: "2026-06-18T10:00:00+03:00",
-    };
+    // 1. Объединяем данные в массив и сразу парсим даты
+    const EXAMS = [
+      { id: 'russian', name: 'ЕГЭ: Русский язык', dateStr: '2026-06-04T10:00:00+03:00' },
+      { id: 'math_profile', name: 'ЕГЭ: Математика (профиль)', dateStr: '2026-06-08T10:00:00+03:00' },
+      { id: 'physics', name: 'ЕГЭ: Физика', dateStr: '2026-06-11T10:00:00+03:00' },
+      { id: 'informatics', name: 'ЕГЭ: Информатика', dateStr: '2026-06-18T10:00:00+03:00' },
+    ].map(exam => ({
+      ...exam,
+      dateObj: new Date(exam.dateStr), // Парсим 1 раз при загрузке
+      formattedDate: new Date(exam.dateStr).toLocaleDateString('ru-RU', {
+        day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+      })
+    }));
 
-    const EXAM_NAMES = {
-      russian:     "ЕГЭ: Русский язык",
-      math_profile:"ЕГЭ: Математика (профиль)",
-      physics:     "ЕГЭ: Физика",
-      informatics: "ЕГЭ: Информатика",
-    };
+    // Массив для хранения ссылок на DOM-элементы (чтобы не искать их каждую секунду)
+    const domElements = [];
 
-    function getTimeRemaining(targetDate) {
-      const now = new Date();
-      const target = new Date(targetDate);
-      const diff = target - now;
-
-      if (diff <= 0) {
-        return { days:0, hours:0, minutes:0, seconds:0, expired:true };
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      return { days, hours, minutes, seconds, expired:false };
-    }
-
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('ru-RU', {
-        day:'numeric',
-        month:'long',
-        hour:'2-digit',
-        minute:'2-digit'
-      });
+    // Утилита для склонения слов (1 день, 2 дня, 5 дней)
+    function declOfNum(n, text_forms) {
+      n = Math.abs(n) % 100; 
+      const n1 = n % 10;
+      if (n > 10 && n < 20) return text_forms[2];
+      if (n1 > 1 && n1 < 5) return text_forms[1];
+      if (n1 === 1) return text_forms[0];
+      return text_forms[2];
     }
 
     function padZero(num) {
-      return num.toString().padStart(2,'0');
+      return num.toString().padStart(2, '0');
     }
 
-    function getNearestExam() {
-      const now = new Date();
-      let nearest = null;
-      let nearestKey = null;
-
-      for (const [key, date] of Object.entries(EXAM_DATES)) {
-        const examDate = new Date(date);
-        if (examDate > now) {
-          if (!nearest || examDate < nearest) {
-            nearest = examDate;
-            nearestKey = key;
-          }
-        }
-      }
-
-      return nearestKey;
-    }
-
-    function renderTimers() {
+    // Инициализация DOM (вызывается 1 раз)
+    function initDOM() {
       const grid = document.getElementById('timersGrid');
-      grid.innerHTML = '';
-
-      const nearestKey = getNearestExam();
-
-      for (const [key, date] of Object.entries(EXAM_DATES)) {
-        const time = getTimeRemaining(date);
-        const isNearest = key === nearestKey && !time.expired;
-
+      
+      EXAMS.forEach((exam, index) => {
         const card = document.createElement('div');
-        card.className = `timer-card${isNearest ? ' next' : ''}${time.expired ? ' expired' : ''}`;
+        card.className = 'timer-card';
+        card.id = `card-${exam.id}`;
 
         card.innerHTML = `
-          <div class="exam-title">${EXAM_NAMES[key]}</div>
+          <div class="exam-title">${exam.name}</div>
           <div class="countdown">
             <div class="time-block">
-              <span class="time-value">${padZero(time.days)}</span>
-              <span class="time-label">Дней</span>
+              <span class="time-value" data-ref="days">00</span>
+              <span class="time-label" data-ref="days-label">Дней</span>
             </div>
             <div class="time-block">
-              <span class="time-value">${padZero(time.hours)}</span>
-              <span class="time-label">Часов</span>
+              <span class="time-value" data-ref="hours">00</span>
+              <span class="time-label" data-ref="hours-label">Часов</span>
             </div>
             <div class="time-block">
-              <span class="time-value">${padZero(time.minutes)}</span>
-              <span class="time-label">Мин</span>
+              <span class="time-value" data-ref="minutes">00</span>
+              <span class="time-label" data-ref="minutes-label">Мин</span>
             </div>
             <div class="time-block">
-              <span class="time-value">${padZero(time.seconds)}</span>
-              <span class="time-label">Сек</span>
+              <span class="time-value" data-ref="seconds">00</span>
+              <span class="time-label">Сек</span> <!-- Секунды не склоняем, оставим Сек -->
             </div>
           </div>
-          <div class="exam-time">${formatDate(date)}</div>
+          <div class="exam-time">${exam.formattedDate}</div>
         `;
-
+        
         grid.appendChild(card);
-      }
 
-      if (nearestKey) {
-        document.getElementById('nearestName').textContent = EXAM_NAMES[nearestKey];
-        document.getElementById('nearestDate').textContent = formatDate(EXAM_DATES[nearestKey]);
+        // Сохраняем ссылки на элементы, текст которых будем менять
+        domElements.push({
+          exam: exam,
+          cardEl: card,
+          daysEl: card.querySelector('[data-ref="days"]'),
+          daysLbl: card.querySelector('[data-ref="days-label"]'),
+          hoursEl: card.querySelector('[data-ref="hours"]'),
+          hoursLbl: card.querySelector('[data-ref="hours-label"]'),
+          minutesEl: card.querySelector('[data-ref="minutes"]'),
+          minutesLbl: card.querySelector('[data-ref="minutes-label"]'),
+          secondsEl: card.querySelector('[data-ref="seconds"]')
+        });
+      });
+    }
+
+    // Функция обновления таймеров (вызывается каждую секунду)
+    function updateTimers() {
+      const now = new Date();
+      let nearestExam = null;
+
+      // 1. Обновляем карточки
+      domElements.forEach(item => {
+        const diff = item.exam.dateObj - now;
+
+        if (diff <= 0) {
+          if (!item.cardEl.classList.contains('expired')) {
+            item.cardEl.classList.add('expired');
+            item.cardEl.classList.remove('next');
+            item.daysEl.textContent = '00';
+            item.hoursEl.textContent = '00';
+            item.minutesEl.textContent = '00';
+            item.secondsEl.textContent = '00';
+          }
+          return;
+        }
+
+        // Находим ближайший экзамен
+        if (!nearestExam || item.exam.dateObj < nearestExam.dateObj) {
+          nearestExam = item.exam;
+        }
+
+        // Математика времени
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / 1000 / 60) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        // Обновляем текст только там, где это нужно
+        item.daysEl.textContent = padZero(days);
+        item.daysLbl.textContent = declOfNum(days, ['День', 'Дня', 'Дней']);
+        
+        item.hoursEl.textContent = padZero(hours);
+        item.hoursLbl.textContent = declOfNum(hours, ['Час', 'Часа', 'Часов']);
+        
+        item.minutesEl.textContent = padZero(minutes);
+        item.minutesLbl.textContent = declOfNum(minutes, ['Мин', 'Мин', 'Мин']);
+        
+        item.secondsEl.textContent = padZero(seconds);
+      });
+
+      // 2. Обновляем статус ближайшего экзамена
+      domElements.forEach(item => {
+        if (nearestExam && item.exam.id === nearestExam.id) {
+          item.cardEl.classList.add('next');
+        } else {
+          item.cardEl.classList.remove('next');
+        }
+      });
+
+      // 3. Обновляем хедер
+      const nearestNameEl = document.getElementById('nearestName');
+      const nearestDateEl = document.getElementById('nearestDate');
+
+      if (nearestExam) {
+        // Проверка, чтобы не перезаписывать текст (экономим ресурсы DOM)
+        if (nearestNameEl.textContent !== nearestExam.name) {
+          nearestNameEl.textContent = nearestExam.name;
+          nearestDateEl.textContent = nearestExam.formattedDate;
+        }
       } else {
-        document.getElementById('nearestName').textContent = 'Все экзамены сданы!';
-        document.getElementById('nearestDate').textContent = '';
+        if (nearestNameEl.textContent !== 'Все экзамены сданы!') {
+          nearestNameEl.textContent = 'Все экзамены сданы!';
+          nearestDateEl.textContent = '';
+        }
       }
     }
 
-    renderTimers();
-    setInterval(renderTimers, 1000);
+    // Запуск
+    initDOM();
+    updateTimers(); // Сразу обновляем 1 раз
+    setInterval(updateTimers, 1000); // Затем каждую секунду
   </script>
 </body>
 </html>
